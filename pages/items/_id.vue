@@ -9,8 +9,8 @@
       <h3>Price: ${{ currentItem.price.toFixed(2) }}</h3>
       <div class="quantity">
         <input type="number" v-model="quantity" min="1" />
-        <button class="primary">
-          Add to cart - {{ totalCart.toFixed(2) }}
+        <button @click="addToCart" class="primary">
+          Add to cart - {{ totalCart }}
         </button>
       </div>
       <fieldset>
@@ -28,6 +28,10 @@
           <label :for="addon">{{ addon }}</label>
         </div>
       </fieldset>
+      <toast v-if="cartSubmitted">
+        Order Submitted <br />
+        check out more <nuxt-link to="/restaurants">resaturants</nuxt-link>
+      </toast>
     </section>
     <section class="desc">{{ currentItem.description }}</section>
   </main>
@@ -35,13 +39,27 @@
 
 <script>
 import { mapState } from "vuex";
+import Toast from "@/components/Toast.vue";
+import { reactive, toRefs } from "@nuxtjs/composition-api";
 
 export default {
-  data() {
-    return {
-      id: this.$route.params.id,
+  components: {
+    Toast
+  },
+  setup() {
+    const state = reactive({
+      cartSubmitted: false,
       quantity: 1,
       itemAddons: []
+    });
+
+    return {
+      ...toRefs(state)
+    };
+  },
+  data() {
+    return {
+      id: this.$route.params.id
     };
   },
   computed: {
@@ -57,7 +75,19 @@ export default {
       return item.menu.find(item => item.id === this.id);
     },
     totalCart() {
-      return this.currentItem.price * +this.quantity;
+      return (this.currentItem.price * +this.quantity).toFixed(2);
+    }
+  },
+  methods: {
+    addToCart() {
+      let formOutput = {
+        item: this.currentItem.item,
+        quantity: this.quantity,
+        addOn: this.itemAddons,
+        totalCart: this.totalCart
+      };
+      this.cartSubmitted = true;
+      this.$store.commit("addToCart", formOutput);
     }
   }
 };

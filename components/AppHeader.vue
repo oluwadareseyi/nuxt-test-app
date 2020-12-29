@@ -4,7 +4,7 @@
       Nuxt Food App
     </h1>
     <button>
-      See Resturants.
+      See Restaurants.
     </button>
   </section>
 </template>

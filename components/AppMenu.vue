@@ -2,17 +2,31 @@
   <nav>
     <ul>
       <li>
-        <nuxt-link to="/" exact>Home</nuxt-link>
+        <nuxt-link to="/" exact>
+          <app-logo />
+        </nuxt-link>
       </li>
       <li>
-        <nuxt-link to="/resturants" exact>Resturants</nuxt-link>
+        <nuxt-link to="/restaurants" exact>Restaurants</nuxt-link>
       </li>
     </ul>
+    <div class="smallnum" v-if="totalQuantity > 0">{{ totalQuantity }}</div>
+    <nuxt-link to="/cart">Cart</nuxt-link>
   </nav>
 </template>
 
 <script>
-export default {};
+import AppLogo from "@/components/AppLogo.vue";
+import { mapGetters } from "vuex";
+
+export default {
+  components: {
+    AppLogo
+  },
+  computed: {
+    ...mapGetters(["totalQuantity"])
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>
